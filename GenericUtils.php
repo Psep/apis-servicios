@@ -13,6 +13,7 @@ final class GenericUtils{
 	 * @param $string
 	 * @param $start
 	 * @param $end
+	 * @return string
 	 */
 	public static function searchTags($string, $start, $end) {
 		$string = " " . $string;

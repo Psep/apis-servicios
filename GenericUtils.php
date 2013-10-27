@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (C) 2013 Pablo Sepúlveda P. <psep.pentauc@gmail.com>
  *

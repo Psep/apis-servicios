@@ -102,6 +102,12 @@ class Bip {
 }
 
 /**
+ * Cabeceras para el JSON
+ */
+header("Access-Control-Allow-Origin: *");
+header('Content-type: application/json');
+
+/**
  * Instancia de la clase Bip incluyendo
  * método GET como valor:
  * 

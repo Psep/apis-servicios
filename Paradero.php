@@ -54,31 +54,51 @@ class Paradero extends AbstractCURL {
 		$this -> claveBusquedaParadero = $claveBusquedaParadero;
 		$this -> claveBusquedaBus = $claveBusquedaBus;
 	}
-
+	
+	/**
+	 * 
+	 */
 	public function searchIngresoParadero() {
 		if ($this -> claveIngresarParadero == "") {
 			return null;
 		} else {
-			$url = "http://web.smsbus.cl/simtweb/buscarAction.do?d=busquedaParadero&destino_nombre=rrrrr&servicio=-1&destino=-1&paradero=-1&busqueda_rapida=PC616+C08&ingresar_paradero=".trim($this->claveIngresarParadero);
-			$web = $this -> getData($url);
-
-			return $web;
-			//TODO debe ser procesado
+			$url = "http://web.smsbus.cl/simtweb/buscarAction.do?d=busquedaParadero&destino_nombre=rrrrr&servicio=-1&destino=-1&paradero=-1&busqueda_rapida=PC616+C08&ingresar_paradero=" . trim($this -> claveIngresarParadero);
+			return $this->parsedHTML($this -> getData($url));
 		}
 	}
+	
+	/**
+	 * 
+	 */
+	private function parsedHTML($data) {
+		$dom = new DOMDocument();
+		$dom -> preserveWhiteSpace = false;
+		@$dom -> loadHTML($data);
+		$start = "}";
+		$end = "	Volver";
+		$al = @GenericUtils::searchTags($dom -> textContent, $start, $end);
 
+		// return $al;TODO revisar tags
+
+		return @GenericUtils::searchTags($al, $start, ".");
+	}
+
+	/**
+	 * 
+	 */
 	public function searchParaderoAndBus() {
 		if ($this -> claveBusquedaParadero == "" || $this -> claveBusquedaBus == "") {
 			return null;
 		} else {
-			$url = "http://web.smsbus.cl/simtweb/buscarAction.do?d=busquedaRapida&destino_nombre=rrrrr&servicio=-1&destino=-1&paradero=-1&busqueda_rapida=".trim($this->claveBusquedaParadero)."+".trim($this->claveBusquedaBus)."&ingresar_paradero=PC616";
-			$web = $this->getData($url);
-			
-			return $web;//TODO debe ser procesado
+			$url = "http://web.smsbus.cl/simtweb/buscarAction.do?d=busquedaRapida&destino_nombre=rrrrr&servicio=-1&destino=-1&paradero=-1&busqueda_rapida=" . trim($this -> claveBusquedaParadero) . "+" . trim($this -> claveBusquedaBus) . "&ingresar_paradero=PC616";
+			return $this->parsedHTML($this -> getData($url));
 		}
 
 	}
 
+	/**
+	 * 
+	 */
 	private function getData($urlData) {
 		$url = "http://web.smsbus.cl/simtweb/buscarAction.do?d=cargarServicios";
 		$cookie = tempnam("/tmp", "cookie");
@@ -98,8 +118,7 @@ class Paradero extends AbstractCURL {
 // header("Access-Control-Allow-Origin: *");
 // header('Content-type: application/json');
 
-$paradero = new Paradero("pc616", "pd171", "107");
+$paradero = new Paradero("pd171", "pd171", "107");
 var_dump($paradero -> searchIngresoParadero());
-var_dump($paradero->searchParaderoAndBus());
-
+// var_dump($paradero->searchParaderoAndBus());
 ?>

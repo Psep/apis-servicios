@@ -70,21 +70,45 @@ class Paradero extends AbstractCURL {
 			return null;
 		} else {
 			$url = "http://web.smsbus.cl/simtweb/buscarAction.do?d=busquedaParadero&destino_nombre=rrrrr&servicio=-1&destino=-1&paradero=-1&busqueda_rapida=PC616+C08&ingresar_paradero=" . trim($this -> claveIngresarParadero);
-			return $this -> parsedHTML($this -> getData($url));
+			return $this -> parsedHTML($this -> getData($url), TRUE);
 		}
 	}
 
 	/**
 	 *
 	 */
-	private function parsedHTML($data) {
+	private function parsedHTML($data, $type) {
 		$dataArr = array();
 		$data = strip_tags(trim($data), "<div><img>");
 		$data = str_replace("\t", "", $data);
 		$data = str_replace("\r", "", $data);
-		$dataArr[] = trim(@GenericUtils::searchTags($data, '<div id="contenido_respuesta_2">', '<div style="clear:both"></div>'));
+		$start= '';
+		$end  = '';
 		
-		// return $dataArr;
+		if($type){
+			$start	= '<div id="contenido_respuesta_2">';
+			$end	= '<div style="clear:both"></div>';
+		}else{
+			$start	= '<div id="contenido_respuesta">';
+			$end	= '<div id="volver"';
+		}
+		
+		$parsedData = trim(@GenericUtils::searchTags($data, $start, $end));
+		
+		if($parsedData == ""){
+			if(!$type){
+				$start	= '<div id="contenido_respuesta_2">';
+				$end	= '<div style="clear:both"></div>';
+			}else{
+				$start	= '<div id="contenido_respuesta">';
+				$end	= '<div id="volver"';
+			}
+			
+			$parsedData = trim(@GenericUtils::searchTags($data, $start, $end));
+		}
+		
+		$dataArr[] = $parsedData;
+		
 		return json_encode($dataArr);
 	}
 
@@ -96,7 +120,7 @@ class Paradero extends AbstractCURL {
 			return null;
 		} else {
 			$url = "http://web.smsbus.cl/simtweb/buscarAction.do?d=busquedaRapida&destino_nombre=rrrrr&servicio=-1&destino=-1&paradero=-1&busqueda_rapida=" . trim($this -> claveIngresarParadero) . "+" . trim($this -> claveBusquedaBus) . "&ingresar_paradero=PC616";
-			return $this -> parsedHTML($this -> getData($url));
+			return $this -> parsedHTML($this -> getData($url), FALSE);
 		}
 
 	}

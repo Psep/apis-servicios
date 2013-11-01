@@ -39,65 +39,70 @@ require_once 'AbstractCURL.php';
  */
 class Paradero extends AbstractCURL {
 	private $claveIngresarParadero;
-	private $claveBusquedaParadero;
 	private $claveBusquedaBus;
 
 	/**
 	 * Constructor de la clase
 	 *
 	 * @param $claveIngresarParadero
-	 * @param $claveBusquedaParadero
 	 * @param $claveBusquedaBus
 	 */
-	public function __construct($claveIngresarParadero, $claveBusquedaParadero, $claveBusquedaBus) {
+	public function __construct($claveIngresarParadero, $claveBusquedaBus) {
 		$this -> claveIngresarParadero = $claveIngresarParadero;
-		$this -> claveBusquedaParadero = $claveBusquedaParadero;
 		$this -> claveBusquedaBus = $claveBusquedaBus;
 	}
 	
+	public function getLogicData(){
+		if($this -> claveIngresarParadero != "" && $this -> claveBusquedaBus != ""){
+			return $this->searchParaderoAndBus();
+		}else if($this -> claveIngresarParadero != ""){
+			return $this->searchIngresoParadero();
+		}else{
+			return null;
+		}
+	}
+
 	/**
-	 * 
+	 *
 	 */
-	public function searchIngresoParadero() {
+	private function searchIngresoParadero() {
 		if ($this -> claveIngresarParadero == "") {
 			return null;
 		} else {
 			$url = "http://web.smsbus.cl/simtweb/buscarAction.do?d=busquedaParadero&destino_nombre=rrrrr&servicio=-1&destino=-1&paradero=-1&busqueda_rapida=PC616+C08&ingresar_paradero=" . trim($this -> claveIngresarParadero);
-			return $this->parsedHTML($this -> getData($url));
+			return $this -> parsedHTML($this -> getData($url));
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private function parsedHTML($data) {
-		$dom = new DOMDocument();
-		$dom -> preserveWhiteSpace = false;
-		@$dom -> loadHTML($data);
-		$start = "}";
-		$end = "	Volver";
-		$al = @GenericUtils::searchTags($dom -> textContent, $start, $end);
-
-		// return $al;TODO revisar tags
-
-		return @GenericUtils::searchTags($al, $start, ".");
+		$dataArr = array();
+		$data = strip_tags(trim($data), "<div><img>");
+		$data = str_replace("\t", "", $data);
+		$data = str_replace("\r", "", $data);
+		$dataArr[] = trim(@GenericUtils::searchTags($data, '<div id="contenido_respuesta_2">', '<div style="clear:both"></div>'));
+		
+		// return $dataArr;
+		return json_encode($dataArr);
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public function searchParaderoAndBus() {
-		if ($this -> claveBusquedaParadero == "" || $this -> claveBusquedaBus == "") {
+	private function searchParaderoAndBus() {
+		if ($this -> claveIngresarParadero == "" || $this -> claveBusquedaBus == "") {
 			return null;
 		} else {
-			$url = "http://web.smsbus.cl/simtweb/buscarAction.do?d=busquedaRapida&destino_nombre=rrrrr&servicio=-1&destino=-1&paradero=-1&busqueda_rapida=" . trim($this -> claveBusquedaParadero) . "+" . trim($this -> claveBusquedaBus) . "&ingresar_paradero=PC616";
-			return $this->parsedHTML($this -> getData($url));
+			$url = "http://web.smsbus.cl/simtweb/buscarAction.do?d=busquedaRapida&destino_nombre=rrrrr&servicio=-1&destino=-1&paradero=-1&busqueda_rapida=" . trim($this -> claveIngresarParadero) . "+" . trim($this -> claveBusquedaBus) . "&ingresar_paradero=PC616";
+			return $this -> parsedHTML($this -> getData($url));
 		}
 
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private function getData($urlData) {
 		$url = "http://web.smsbus.cl/simtweb/buscarAction.do?d=cargarServicios";
@@ -115,10 +120,13 @@ class Paradero extends AbstractCURL {
 /**
  * Cabeceras para el JSON
  */
-// header("Access-Control-Allow-Origin: *");
-// header('Content-type: application/json');
+header("Access-Control-Allow-Origin: *");
+header('Content-type: application/json');
 
-$paradero = new Paradero("pd171", "pd171", "107");
-var_dump($paradero -> searchIngresoParadero());
-// var_dump($paradero->searchParaderoAndBus());
+/**
+ * Paradero.php?busquedaParadero=xxxx&busquedaBus=xxxx
+ */
+$paradero = new Paradero(trim(htmlspecialchars($_GET["busquedaParadero"])), trim(htmlspecialchars($_GET["busquedaBus"])));
+print_r($paradero->getLogicData());
+
 ?>

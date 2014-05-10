@@ -5,7 +5,9 @@ Apis basadas en cURL y PHP para los servicios estatales.
 
 Servicios incluidos:
 - Consulta saldo bip.
+- Ubicación de buses y consulta ubicación próxima de paraderos transantiago (experimental)
 
 Servicios por agregar:
-- Ubicación de buses del transantiago.
-- Consulta ubicación próxima de paraderos.
+- Farmacias de turno.
+- Restaurantes (Sernatur).
+- Bencinas en línea.

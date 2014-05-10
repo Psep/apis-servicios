@@ -46,6 +46,17 @@ final class GenericUtils{
 		return trim(substr($string, $ini, $len));
 	}
 	
+	/**
+	 * 
+	 */
+	public static function startsWith($value, $starts){
+		if (stripos($value, $starts) === 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 }
 
 ?>

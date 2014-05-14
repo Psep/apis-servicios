@@ -40,6 +40,7 @@ require_once 'AbstractCURL.php';
 class Paradero extends AbstractCURL {
 	private $claveIngresarParadero;
 	private $claveBusquedaBus;
+    private $listBuses;
 
 	/**
 	 * Constructor de la clase
@@ -50,6 +51,7 @@ class Paradero extends AbstractCURL {
 	public function __construct($claveIngresarParadero, $claveBusquedaBus) {
 		$this->claveIngresarParadero = $claveIngresarParadero;
 		$this->claveBusquedaBus = $claveBusquedaBus;
+        $this->loadBuses();
 	}
 	
     /**
@@ -64,6 +66,15 @@ class Paradero extends AbstractCURL {
 			return null;
 		}
 	}
+    
+    /**
+     * 
+     */
+    private function loadBuses() {
+        $busesJson = file_get_contents("buses.json");
+        $objBuses = json_decode($busesJson);
+        $this->listBuses = $objBuses->buses;
+    }
 
 	/**
 	 *
@@ -110,9 +121,13 @@ class Paradero extends AbstractCURL {
 			$parsedData = trim(@GenericUtils::searchTags($data, $start, $end));
 		}
 		
+		//TODO test
 		$parsedDataList = preg_split('/(<[^>]*[^\/]>)/i', $parsedData, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-        $list = array();
         $i = 0;
+        $j = 0;
+        
+        $paradero = new ParaderoVO();
+        $paradero->id = $this->claveIngresarParadero;
 		
         foreach ($parsedDataList as $key => $node) {
             $isDiv = strpos($node, "div");
@@ -123,16 +138,48 @@ class Paradero extends AbstractCURL {
                 if ($singleTrim != "") {
                     
                     if ($i <> 0 && $i <> 1 && $i <> 3 && $i <> 4 && $i <> 5 && $i <> 6) {
-                        $list[] = $singleTrim;
+
+                        if ($i == 2) {
+                            $paradero->direccion = $singleTrim;
+                        } else {
+                            $list = array();
+                            
+                            if ($this->isBus($singleTrim)) {
+                                $j++;
+                                $list[$j]["numbus"] = $singleTrim;
+                            } else {
+                                $list[$j]["numbus"][] = $singleTrim;
+                            }
+                            
+                            $paradero->buses[] = $list;
+                        }
                     }
                                         
                     $i++;
                 }
             }
         }
+        
+        // echo json_encode($list); exit;
+        
+		var_dump($paradero);exit;
+		//TODO
 		
-		return json_encode($list);
+		return json_encode($dataArr);
 	}
+    
+    /**
+     * 
+     */
+    private function isBus($string){
+        foreach ($this->listBuses as $key => $obj) {
+            if ($obj->id == $string) {
+                return TRUE;
+            }
+        }
+        
+        return FALSE;
+    }
 
 	/**
 	 *
@@ -164,6 +211,22 @@ class Paradero extends AbstractCURL {
 }
 
 /**
+ * 
+ */
+class ParaderoVO {
+    
+    public $id;
+    public $direccion;
+    public $buses;
+	
+	function __construct() {
+		$this->buses = array();
+	}
+}
+
+
+
+/**
  * Cabeceras para el JSON
  */
 //header("Access-Control-Allow-Origin: *");
@@ -175,7 +238,9 @@ class Paradero extends AbstractCURL {
 //$paradero = new Paradero(trim(htmlspecialchars($_GET["busquedaParadero"])), trim(htmlspecialchars($_GET["busquedaBus"])));
 //print_r($paradero->getLogicData());
 
-
+ini_set('xdebug.var_display_max_depth', -1);
+ini_set('xdebug.var_display_max_children', -1);
+ini_set('xdebug.var_display_max_data', -1);
 $service = new Paradero("PI403", "");
 var_dump($service->getLogicData());
 

@@ -16,17 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with apis-servicios.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * Import GenericUtils class. 
- */
-require_once 'GenericUtils.php';
-
-/**
- * Import AbstractCURL abstract class.
- */
-require_once 'AbstractCURL.php';
-
 /**
  * Service Restaurant's class by OpenGov's data.
  * 
@@ -191,36 +180,5 @@ class Restaurant extends AbstractCURL {
         }
     }
 }
-
-/**
- * JSON's headers
- */
-header("Access-Control-Allow-Origin: *");
-header('Content-type: application/json');
-
-/**
- * Load GET parameter region
- */
-$region = htmlspecialchars(strtolower($_GET["region"]));
-
-/**
- * Restaurant's instance.
- * 
- * Load service with:
- * 
- * Restaurant.php?region=xxxxx
- * 
- * Options (xxxxx parameter):
- * 
- * metropolitana, antofagasta, arica, atacama, aysen, biobio, 
- * coquimbo, araucania, ohiggins, lagos, rios, magallanes, 
- * maule, tarapaca, valparaiso
- */
-$service= new Restaurant($region);
-
-/**
- * Execute the service
- */
-print_r($service->getData());
 
 ?>

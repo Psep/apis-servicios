@@ -27,7 +27,7 @@ require_once 'utils/GenericUtils.php';
 require_once 'services/AbstractCURL.php';
 
 /**
- * Include AbstractCURL class
+ * Include Bip class
  */
 require_once 'services/Bip.php';
 

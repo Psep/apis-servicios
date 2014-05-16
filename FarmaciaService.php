@@ -27,7 +27,7 @@ require_once 'utils/GenericUtils.php';
 require_once 'services/AbstractCURL.php';
 
 /**
- * Include AbstractCURL class
+ * Include Farmacia class
  */
 require_once 'services/Farmacia.php';
 

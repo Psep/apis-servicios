@@ -175,8 +175,7 @@ class Restaurant extends AbstractCURL {
                 $aux = true;
             }
             
-            return $data;
-            // return json_encode($data);
+            return json_encode($data);
         }
     }
 }

@@ -37,7 +37,7 @@ require_once 'AbstractCURL.php';
  * @license GNU GPLv3 or later
  * @link http://www.psep.cl
  */
-class ParaderoService extends AbstractCURL {
+class Paradero extends AbstractCURL {
 	private $claveIngresarParadero;
 	private $claveBusquedaBus;
     private $listBuses;

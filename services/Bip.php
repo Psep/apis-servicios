@@ -16,22 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with apis-servicios.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * Include GenericUtils class
- */  
-require_once 'GenericUtils.php'; 
-
-/**
- * Include AbstractCURL class
- */
-require_once 'AbstractCURL.php';
- 
 /**
  * Clase de Consulta Tarjeta Bip!.
  * 
  * @author Pablo Sepúlveda P. <psep.pentauc@gmail.com>
- * @version 1.0
+ * @version 2.0
  * @package apis-servicios
  * @copyright Copyright (C) 2010-2013 Pablo Sepúlveda P.
  * @license GNU GPLv3 or later
@@ -95,26 +84,5 @@ class Bip extends AbstractCURL{
 	}
 
 }
-
-/**
- * Cabeceras para el JSON
- */
-header("Access-Control-Allow-Origin: *");
-header('Content-type: application/json');
-
-/**
- * Instancia de la clase Bip incluyendo
- * método GET como valor:
- * 
- * Bip.php?numberBip=xxxxxxx
- * 
- * Donde xxxxxxx es el número de la tarjeta.
- */
-$bip = new Bip(htmlspecialchars($_GET["numberBip"]));
-
-/**
- * Ejecución de la función getData.
- */
-print_r($bip -> getData());
 
 ?>

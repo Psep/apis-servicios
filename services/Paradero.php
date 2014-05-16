@@ -138,6 +138,7 @@ class Paradero extends AbstractCURL {
                 $singleTrim = trim($node);
                 
                 if ($singleTrim != "") {
+                    // echo $i." - ".$singleTrim."\n";//TODO
                     if ($i == 1) {
                         $list["info"] = $singleTrim;
                     } elseif ($i == 2) {
@@ -145,7 +146,7 @@ class Paradero extends AbstractCURL {
                     }
                     
                     // Valida tipo de consulta sin bus
-                    if ($i > 6 && $type == TRUE) {
+                    if ($i > 5 && $type == TRUE) {
                         $validate = $this->isBus($singleTrim);
                         
                         if ($validate == TRUE) {
@@ -160,14 +161,16 @@ class Paradero extends AbstractCURL {
                             $fields.= "</p>";
                         } else {
                             // Campos
-                            $fields.= "<p>";
-                            $fields.= $singleTrim;
-                            $fields.= "</p>";
+                            if (strpos($singleTrim, "istancia") === FALSE) {
+                                $fields.= "<p>";
+                                $fields.= $singleTrim;
+                                $fields.= "</p>";
+                            }
                         }
                     
                     // Tipo de consulta con bus    
-                    } elseif ($i > 6 && $type == FALSE) {
-                        
+                    } elseif ($i > 5 && $type == FALSE) {
+                           
                         if ($i == 7) {
                             $fields.= "<li>";
                             $fields.= "<p>";
@@ -190,7 +193,7 @@ class Paradero extends AbstractCURL {
         
         if ($fields == "") {
             $dataList.= "<li>";
-            $dataList.= "Paradero no encontrado";
+            $dataList.= "Sin información";
             $dataList.= "</li>";
         } else {
             $isLi = strpos($fields, "li");

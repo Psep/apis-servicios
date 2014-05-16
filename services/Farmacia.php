@@ -16,17 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with apis-servicios.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * Import GenericUtils class. 
- */
-require_once 'GenericUtils.php';
-
-/**
- * Import AbstractCURL abstract class.
- */
-require_once 'AbstractCURL.php';
-
 /**
  * Service Farmacia's class by OpenGov's data.
  * 
@@ -120,36 +109,5 @@ class Farmacia extends AbstractCURL {
     }
 
 }
-
-/**
- * JSON's headers
- */
-// header("Access-Control-Allow-Origin: *");
-// header('Content-type: application/json');
-
-/**
- * Load GET parameter lat and lon
- */
-$lat = htmlspecialchars($_GET["lat"]);
-$lon = htmlspecialchars($_GET["lon"]);
-
-/**
- * Farmacia's instance.
- * 
- * Load service with:
- * 
- * Farmacia.php?lat=xxxx&lon=xxxx
- * 
- */
-$lat = "-33.449069";
-$lon = "-70.654828";
-$service = new Farmacia($lat, $lon);
-
-/**
- * Execute the service
- */
-// print_r($service->getData());
-var_dump($service->getData());
-// var_dump($service);
 
 ?>

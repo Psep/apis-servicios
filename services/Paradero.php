@@ -16,17 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with apis-servicios.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * Include GenericUtils class
- */
-require_once 'GenericUtils.php';
-
-/**
- * Include AbstractCURL class
- */
-require_once 'AbstractCURL.php';
-
 /**
  * Esta clase contiene las conexiones a Paraderos.
  *
@@ -75,7 +64,7 @@ class Paradero extends AbstractCURL {
      * desde json a un array..
      */
     private function loadBuses() {
-        $json = file_get_contents("buses.json");
+        $json = file_get_contents(DATA_BUSES);
         $data = json_decode($json);
         $list = $data->buses;
         
@@ -273,20 +262,5 @@ class Paradero extends AbstractCURL {
 	}
 
 }
-
-/**
- * Cabeceras para el JSON
- */
-header("Access-Control-Allow-Origin: *");
-header('Content-type: application/json');
-
-$paradero = trim(htmlspecialchars($_GET["busquedaParadero"]));
-$bus = trim(htmlspecialchars($_GET["busquedaBus"]));
-
-/**
- * ParaderoService.php?busquedaParadero=xxxx&busquedaBus=xxxx
- */
-$service = new ParaderoService($paradero, $bus);
-print_r($service->getLogicData());
 
 ?>
